@@ -1,6 +1,7 @@
 
 {
   "name": "hardhat-fundme-project",
+  "author": "Daena McClintock"
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
