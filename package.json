@@ -1,6 +1,6 @@
 
 {
-  "name": "hardhat-project",
+  "name": "hardhat-fundme-project",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
@@ -17,6 +17,8 @@
     "prettier-plugin-solidity": "^1.0.0-beta.19"
   },
   "scripts": {
+    "fund": "yarn hardhat run scripts/fund.js --network localhost",
+    "withdraw": "yarn hardhat run scripts/withdraw.js --network localhost",
     "test": "hardhat test",
     "test:staging": "hardhat test --network rinkeby",
     "lint": "solhint 'contracts/*.sol'",
