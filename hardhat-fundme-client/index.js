@@ -11,79 +11,86 @@ fundButton.onclick = fund
 balanceButton.onclick = getBalance
 
 async function connect() {
-  if (typeof window.ethereum !== "undefined") {
+    console.log("Contacting to Wallet...")
+    if (typeof window.ethereum !== "undefined") {
     try {
-      await ethereum.request({ method: "eth_requestAccounts" })
+        await ethereum.request({ method: "eth_requestAccounts" })
     } catch (error) {
-      console.log(error)
+        console.log(error)
     }
     connectButton.innerHTML = "Connected"
     const accounts = await ethereum.request({ method: "eth_accounts" })
     console.log(accounts)
-  } else {
+    } else {
     connectButton.innerHTML = "Please install MetaMask"
-  }
+    }
 }
 
 async function withdraw() {
-  console.log(`Withdrawing...`)
-  if (typeof window.ethereum !== "undefined") {
+    console.log(`Withdrawing...`)
+    if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, abi, signer)
+
+    console.log("This is the provider", provider)
+    console.log(signer)
+    console.log(contract)
+
     try {
-      const transactionResponse = await contract.withdraw()
-      await listenForTransactionMine(transactionResponse, provider)
+        const transactionResponse = await contract.withdraw()
+        await listenForTransactionMine(transactionResponse, provider)
+        console.log(transactionResponse)
     } catch (error) {
-      console.log(error)
+        console.log(error)
     }
-  } else {
+    } else {
     withdrawButton.innerHTML = "Please install MetaMask"
-  }
+    }
 }
 
 async function fund() {
-  const ethAmount = document.getElementById("ethAmount").value
-  console.log(`Funding with ${ethAmount} ETH...`)
-  if (typeof window.ethereum !== "undefined") {
+    const ethAmount = document.getElementById("ethAmount").value
+    console.log(`Funding with ${ethAmount} ETH...`)
+    if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, abi, signer)
     try {
-      const transactionResponse = await contract.fund({
+        const transactionResponse = await contract.fund({
         value: ethers.utils.parseEther(ethAmount),
-      })
-      await listenForTransactionMine(transactionResponse, provider)
+        })
+        await listenForTransactionMine(transactionResponse, provider)
     } catch (error) {
-      console.log(error)
+        console.log(error)
     }
-  } else {
+    } else {
     fundButton.innerHTML = "Please install MetaMask"
-  }
+    }
 }
 
 async function getBalance() {
-  if (typeof window.ethereum !== "undefined") {
+    if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     try {
-      const balance = await provider.getBalance(contractAddress)
-      console.log(ethers.utils.formatEther(balance))
+        const balance = await provider.getBalance(contractAddress)
+        console.log(ethers.utils.formatEther(balance)) // formatEther make the Ether balance much easier to read
     } catch (error) {
-      console.log(error)
+        console.log(error)
     }
-  } else {
+    } else {
     balanceButton.innerHTML = "Please install MetaMask"
-  }
+    }
 }
 
 function listenForTransactionMine(transactionResponse, provider) {
-  console.log(`Mining ${transactionResponse.hash}`)
-  return new Promise((resolve, reject) => {
+    console.log(`Mining ${transactionResponse.hash}`)
+    return new Promise((resolve, reject) => {
     provider.once(transactionResponse.hash, (transactionReceipt) => {
-      console.log(
+        console.log(
         `Completed with ${transactionReceipt.confirmations} confirmations. `
-      )
-      resolve()
+        )
+        resolve()
     })
-  })
+    })
 }
